@@ -1,4 +1,4 @@
-name := "Spark-Structured-Streaming-Kinesis-Iceberg"
+name := "spark-structured-streaming-kinesis-iceberg"
 
 version := "1.0"
 

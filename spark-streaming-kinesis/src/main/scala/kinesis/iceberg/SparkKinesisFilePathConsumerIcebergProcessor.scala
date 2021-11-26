@@ -48,12 +48,11 @@ object SparkKinesisFilePathConsumerIcebergProcessor {
     import spark.implicits._
     import spark.sql
     // For Spark Shell -- hardcode these parameters
-    var s3_bucket = "akshaya-firehose-test"
-    var streamName = "hudi-stream-ingest"
+     var s3_bucket = "akshaya-firehose-test"
+    var streamName = "workshop-cdc-data"
     var region = "ap-south-1"
-    var tableName = "iceberg_trade_info"
-    var tablePartitionKey = "record_partition_key"
-
+    var tableName = "my_catalog.default.iceberg_sales_order_detail"
+    // Spark Shell ---end 
     if (!Option(args).isEmpty) {
       s3_bucket = args(0)
       streamName = args(1)
@@ -65,6 +64,7 @@ object SparkKinesisFilePathConsumerIcebergProcessor {
     val recordKey = "record_key"
     val checkpoint_path = s"s3://$s3_bucket/kinesis-stream-data-checkpoint/iceberg/$tableName/"
     val endpointUrl = s"https://kinesis.$region.amazonaws.com"
+    var tablePartitionKey = "record_partition_key"
 
     println("s3_bucket:" + s3_bucket)
     println("streamName:" + streamName)

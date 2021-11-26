@@ -70,9 +70,9 @@ object SparkKinesisConsumerIcebergProcessor {
     import spark.sql
     // For Spark Shell -- hardcode these parameters
     var s3_bucket = "akshaya-firehose-test"
-    var streamName = "hudi-stream-ingest"
+    var streamName = "workshop-cdc-data"
     var region = "ap-south-1"
-    var tableName = "local.default.iceberg_trade_info_simulated"
+    var tableName = "my_catalog.default.iceberg_sales_order_detail"
     // Spark Shell ---end 
     if (!Option(args).isEmpty) {
       s3_bucket = args(0)
@@ -124,10 +124,7 @@ object SparkKinesisConsumerIcebergProcessor {
       .option("startingposition", "TRIM_HORIZON")
       .option("endpointUrl", endpointUrl)
       .load())
-    /** {  "Op": "U",  "LINE_ID": 122778,  "LINE_NUMBER": 1,  "ORDER_ID": 22778,
-     * "PRODUCT_ID": 493,  "QUANTITY": 61,  "UNIT_PRICE": 24,  "DISCOUNT": 0,
-     * "SUPPLY_COST": 10,  "TAX": 0,  "ORDER_DATE": "2015-08-29"}
-     */
+
     val decimalType = DataTypes.createDecimalType(38, 10)
     val dataSchema = StructType(Array(
       StructField("LINE_ID", IntegerType, true),
@@ -158,7 +155,6 @@ object SparkKinesisConsumerIcebergProcessor {
     parDF = parDF.select(parDF.columns.map(x => col(x).as(x.toLowerCase)): _*)
     parDF = parDF.filter(parDF.col("order_date").isNotNull)
     parDF.printSchema()
-    parDF.show()
     parDF = parDF.withColumn(recordKey, concat(col("order_id"), lit("#"), col("line_id")))
     parDF = parDF.withColumn("order_date", parDF("order_date").cast(DateType))
     parDF = parDF.withColumn("year", year($"order_date").cast(StringType)).withColumn("month", month($"order_date").cast(StringType))

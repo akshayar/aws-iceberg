@@ -60,7 +60,7 @@ object SparkKinesisConsumerIcebergProcessor {
     var s3_bucket = "akshaya-firehose-test"
     var streamName = "hudi-stream-ingest"
     var region = "ap-south-1"
-    var tableName = "local.default.iceberg_trade_info_simulated"
+    var tableName = "my_catalog.default.iceberg_trade_info_simulated"
     // Spark Shell ---end 
     if (!Option(args).isEmpty) {
       s3_bucket = args(0)

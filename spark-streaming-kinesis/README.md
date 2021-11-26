@@ -58,16 +58,17 @@ timestamp has epoch value in seconds.
 SSH to master node and then run the spark submit command.
 
 ```
-spark-submit \ 
+spark-submit \
 --conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
 --conf spark.sql.catalog.my_catalog=org.apache.iceberg.spark.SparkCatalog    \
---conf spark.sql.catalog.my_catalog.warehouse=s3://<bucket-name>/<path> \
+--conf spark.sql.catalog.my_catalog.warehouse=s3://akshaya-firehose-test/iceberg \
 --conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
 --conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
 --conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
 --conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
 --packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
-org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0 \
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
 --class kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
 <bucket-name> <kinesis-stream-name> <kineis-region> <table-name>
 
@@ -84,7 +85,8 @@ spark-submit \
 --conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
 --conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
 --packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
-org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
 --class kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
 akshaya-firehose-test data-stream-ingest ap-south-1 my_catalog.iceberg.iceberg_trade_info_simulated
 	
@@ -103,7 +105,8 @@ spark-shell
 --conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
 --conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
 --packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
-org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 
 
 ```
 
@@ -144,17 +147,18 @@ DMS publishes the changes to Kineiss
 SSH to master node and then run the spark submit command.
 
 ```
-spark-submit \ 
+spark-submit \
 --conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
 --conf spark.sql.catalog.my_catalog=org.apache.iceberg.spark.SparkCatalog    \
---conf spark.sql.catalog.my_catalog.warehouse=s3://<bucket-name>/<path> \
+--conf spark.sql.catalog.my_catalog.warehouse=s3://akshaya-firehose-test/iceberg \
 --conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
 --conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
 --conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
 --conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
 --packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
-org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0 \
---class kinesis.iceberg.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
+--class kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
 <bucket-name> <kinesis-stream-name> <kineis-region> <table-name>
 
 
@@ -190,7 +194,8 @@ spark-shell
 --conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
 --conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
 --packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
-org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 
 
 ```
 
@@ -210,17 +215,18 @@ The filePath here is the path to the file which got added to S3 by DMS. An S3 ev
     
     
 ```
-spark-submit \ 
+spark-submit \
 --conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
 --conf spark.sql.catalog.my_catalog=org.apache.iceberg.spark.SparkCatalog    \
---conf spark.sql.catalog.my_catalog.warehouse=s3://<bucket-name>/<path> \
+--conf spark.sql.catalog.my_catalog.warehouse=s3://akshaya-firehose-test/iceberg \
 --conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
 --conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
 --conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
 --conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
 --packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
-org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0 \
---class kinesis.iceberg.SparkKinesisFilePathConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
+--class kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
 <bucket-name> <kinesis-stream-name> <kineis-region> <table-name>
 
 
@@ -236,7 +242,8 @@ spark-submit \
 --conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
 --conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
 --packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
-org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
 --class kinesis.iceberg.SparkKinesisFilePathConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
 akshaya-firehose-test data-stream-ingest ap-south-1 my_catalog.iceberg.iceberg_customer_order_details
 	
@@ -256,7 +263,8 @@ spark-shell
 --conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
 --conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
 --packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
-org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 
 ```
 # Possible Issues 
 1.  Could not open client transport with JDBC Uri: jdbc:hive2://localhost:10000: java.net.ConnectException: Connection refused (Connection refused) --- The error message could be distracting. Since Glue Catelog integration is enabled , the job should not connect to Hive. In my case the error only happened in Mumbai region while it worked in Virginia ang Oregon. I had "Lake Formation" enabled in which case a role reading/writing to Glue table should have permission granted on Lake Formation. I granted EMR_EC2_DefaultRole role permission to create table, read and write on "default" database in Lake Formation. default database since without explicitely specifying the table with HIVE_DATABASE_OPT_KEY , HUDI writes to default database. 

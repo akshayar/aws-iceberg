@@ -31,7 +31,7 @@ sbt script version: 1.5.5
 2. SSH to master node and copy jar which was pushed to S3.
     
 ```
-   aws s3 cp s3://<S3-Bucket-Name>/Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar .   
+   aws s3 cp s3://<S3-Bucket-Name>/spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar .   
 ```
 
 # Use Case 1 - Events Published to Kinesis with simulation of late arriving events
@@ -59,37 +59,51 @@ SSH to master node and then run the spark submit command.
 
 ```
 spark-submit \
---conf "spark.serializer=org.apache.spark.serializer.KryoSerializer" \
---conf "spark.sql.hive.convertMetastoreParquet=false" \
---conf "spk.dynamicAllocation.maxExecutors=10" \
---jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
---packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 \
---class kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar \
-<bucket-name>  <stream-name> <region> <COW/MOR> <table_name>
+--conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
+--conf spark.sql.catalog.spark_catalog=org.apache.iceberg.spark.SparkSessionCatalog    \
+--conf spark.sql.catalog.spark_catalog.type=hive    \
+--conf spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog   \
+--conf spark.sql.catalog.local.type=hadoop   \
+--conf spark.sql.catalog.local.warehouse=s3://<bucket-name>/<base-path> \
+--conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
+--conf spark.sql.hive.convertMetastoreParquet=false \
+--packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0 \
+--class kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
+<bucket-name> <kinesis-stream-name> <kineis-region> <table-name>
+
+
 ```
 Example
 ```
 spark-submit \
---conf "spark.serializer=org.apache.spark.serializer.KryoSerializer" \
---conf "spark.sql.hive.convertMetastoreParquet=false" \
---conf "spk.dynamicAllocation.maxExecutors=10" \
---jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
---packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 \
---class kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar \
-aksh-firehose-test hudi-stream-ingest us-west-2 COW trade_event_late_simulation
-	
+--conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
+--conf spark.sql.catalog.spark_catalog=org.apache.iceberg.spark.SparkSessionCatalog    \
+--conf spark.sql.catalog.spark_catalog.type=hive    \
+--conf spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog   \
+--conf spark.sql.catalog.local.type=hadoop   \
+--conf spark.sql.catalog.local.warehouse=s3://<bucket-name>/<base-path> \
+--conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
+--conf spark.sql.hive.convertMetastoreParquet=false \
+--packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0 \
+--class kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
+aksh-firehose-test hudi-stream-ingest ap-south-1 iceberg_trade_event_late_simulation
 	
 ```
 
 ## Spark Shell
-Run the shell with command below and copy paste code from   [kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor](src/main/scala/kinesis/hudi/latefile/SparkKinesisConsumerHudiProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
+Run the shell with command below and copy paste code from   [kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor](src/main/scala/kinesis/hudi/iceberg/SparkKinesisConsumerIcebergProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
 
 ```
-spark-shell \
---conf 'spark.serializer=org.apache.spark.serializer.KryoSerializer' \
---conf 'spark.sql.hive.convertMetastoreParquet=false' \
---jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
---packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4
+--conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
+--conf spark.sql.catalog.spark_catalog=org.apache.iceberg.spark.SparkSessionCatalog    \
+--conf spark.sql.catalog.spark_catalog.type=hive    \
+--conf spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog   \
+--conf spark.sql.catalog.local.type=hadoop   \
+--conf spark.sql.catalog.local.warehouse=s3://<bucket-name>/<base-path> \
+--conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
+--conf spark.sql.hive.convertMetastoreParquet=false \
+--packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0 
+
 ```
 
 # Use Case 2 - Consume CDC events Published to Kinesis by DMS

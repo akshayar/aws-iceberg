@@ -86,7 +86,7 @@ spark-submit \
 --conf spark.sql.hive.convertMetastoreParquet=false \
 --packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0 \
 --class kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
-akshaya-firehose-test data-stream-ingest ap-south-1 iceberg_trade_event_late_simulation
+akshaya-firehose-test data-stream-ingest ap-south-1 local.default.iceberg_trade_info_simulated
 	
 ```
 

@@ -267,5 +267,5 @@ org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-s
 software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 
 ```
 # Possible Issues 
-1.  Could not open client transport with JDBC Uri: jdbc:hive2://localhost:10000: java.net.ConnectException: Connection refused (Connection refused) --- The error message could be distracting. Since Glue Catelog integration is enabled , the job should not connect to Hive. In my case the error only happened in Mumbai region while it worked in Virginia ang Oregon. I had "Lake Formation" enabled in which case a role reading/writing to Glue table should have permission granted on Lake Formation. I granted EMR_EC2_DefaultRole role permission to create table, read and write on "default" database in Lake Formation. default database since without explicitely specifying the table with HIVE_DATABASE_OPT_KEY , HUDI writes to default database. 
+
 2. 

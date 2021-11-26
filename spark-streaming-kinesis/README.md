@@ -58,15 +58,14 @@ timestamp has epoch value in seconds.
 SSH to master node and then run the spark submit command.
 
 ```
-spark-submit \
+spark-submit \ 
 --conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
---conf spark.sql.catalog.spark_catalog=org.apache.iceberg.spark.SparkSessionCatalog    \
---conf spark.sql.catalog.spark_catalog.type=hive    \
---conf spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog   \
---conf spark.sql.catalog.local.type=hadoop   \
---conf spark.sql.catalog.local.warehouse=s3://<bucket-name>/<base-path> \
---conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
---conf spark.sql.hive.convertMetastoreParquet=false \
+--conf spark.sql.catalog.my_catalog=org.apache.iceberg.spark.SparkCatalog    \
+--conf spark.sql.catalog.my_catalog.warehouse=s3://<bucket-name>/<path> \
+--conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
+--conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
+--conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
+--conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
 --packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0 \
 --class kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
 <bucket-name> <kinesis-stream-name> <kineis-region> <table-name>
@@ -77,16 +76,15 @@ Example
 ```
 spark-submit \
 --conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
---conf spark.sql.catalog.spark_catalog=org.apache.iceberg.spark.SparkSessionCatalog    \
---conf spark.sql.catalog.spark_catalog.type=hive    \
---conf spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog   \
---conf spark.sql.catalog.local.type=hadoop   \
---conf spark.sql.catalog.local.warehouse=s3://akshaya-firehose-test/iceberg \
---conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
---conf spark.sql.hive.convertMetastoreParquet=false \
---packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0 \
+--conf spark.sql.catalog.my_catalog=org.apache.iceberg.spark.SparkCatalog    \
+--conf spark.sql.catalog.my_catalog.warehouse=s3://akshaya-firehose-test/iceberg \
+--conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
+--conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
+--conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
+--conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
+--packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
 --class kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
-akshaya-firehose-test data-stream-ingest ap-south-1 local.default.iceberg_trade_info_simulated
+akshaya-firehose-test data-stream-ingest ap-south-1 my_catalog.iceberg.iceberg_trade_info_simulated
 	
 ```
 

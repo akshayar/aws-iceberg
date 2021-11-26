@@ -57,16 +57,16 @@ object SparkKinesisConsumerIcebergProcessor {
     import spark.sql
     spark.conf.set("spark.sql.streaming.metricsEnabled", "true")
     // Spark Shell -- hardcode these parameters
-    val s3_bucket = "akshaya-firehose-test"
-    val streamName = "hudi-stream-ingest"
-    val region = "ap-south-1"
-    val tableName = "local.default.iceberg_trade_info_simulated"
+    var s3_bucket = "akshaya-firehose-test"
+    var streamName = "hudi-stream-ingest"
+    var region = "ap-south-1"
+    var tableName = "local.default.iceberg_trade_info_simulated"
     // Spark Shell ---end 
     if (!Option(args).isEmpty) {
-      val s3_bucket = args(0)
-      val streamName = args(1)
-      val region = args(2)
-      val tableName = args(3)
+      s3_bucket = args(0)
+      streamName = args(1)
+      region = args(2)
+      tableName = args(3)
     }
 
     // Spark Shell ---start 

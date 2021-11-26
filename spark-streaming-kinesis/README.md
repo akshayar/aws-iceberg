@@ -81,12 +81,12 @@ spark-submit \
 --conf spark.sql.catalog.spark_catalog.type=hive    \
 --conf spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog   \
 --conf spark.sql.catalog.local.type=hadoop   \
---conf spark.sql.catalog.local.warehouse=s3://<bucket-name>/<base-path> \
+--conf spark.sql.catalog.local.warehouse=s3://akshaya-firehose-test/iceberg \
 --conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
 --conf spark.sql.hive.convertMetastoreParquet=false \
 --packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0 \
 --class kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
-aksh-firehose-test hudi-stream-ingest ap-south-1 iceberg_trade_event_late_simulation
+akshaya-firehose-test data-stream-ingest ap-south-1 iceberg_trade_event_late_simulation
 	
 ```
 

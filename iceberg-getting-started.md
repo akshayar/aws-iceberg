@@ -1,5 +1,5 @@
 ## Spark SQL
-```
+```shell
 -- Apache Iceberg
 spark-sql \
 --packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
@@ -16,7 +16,7 @@ software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-clie
 ```
 
 ## Create Table
-```
+```sql
 --Apache Iceberg
 create table if not exists my_catalog.iceberg.iceberg_sample_table (
     id bigint,

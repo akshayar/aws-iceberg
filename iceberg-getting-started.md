@@ -25,8 +25,11 @@ create table if not exists my_catalog.iceberg.iceberg_sample_table (
     hh string 
 ) using iceberg
 partitioned by (dt, hh);
+```
+![Folder Structure](./images/iceberg-folders.png)
+```
 
--- Content of s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/metadata/00000-2c217da2-d0a1-40cc-b8be-b48579939d9c.metadata.json
+-- Metadata Content of s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/metadata/00000-2c217da2-d0a1-40cc-b8be-b48579939d9c.metadata.json
 {
   "format-version" : 1,
   "table-uuid" : "61baf2f9-7add-4be0-8929-b345c82e5aee",
@@ -36,81 +39,51 @@ partitioned by (dt, hh);
   "schema" : {
     "type" : "struct",
     "schema-id" : 0,
-    "fields" : [ {
-      "id" : 1,
-      "name" : "id",
-      "required" : false,
-      "type" : "long"
-    }, {
-      "id" : 2,
-      "name" : "name",
-      "required" : false,
-      "type" : "string"
-    }, {
-      "id" : 3,
-      "name" : "dt",
-      "required" : false,
-      "type" : "string"
-    }, {
-      "id" : 4,
-      "name" : "hh",
-      "required" : false,
-      "type" : "string"
-    } ]
+    "fields" : [ 
+        {      "id" : 1,      "name" : "id",      "required" : false,      "type" : "long"      }, 
+        {      "id" : 2,      "name" : "name",    "required" : false,      "type" : "string"    }, 
+        {      "id" : 3,      "name" : "dt",      "required" : false,      "type" : "string"    }, 
+        {      "id" : 4,      "name" : "hh",      "required" : false,      "type" : "string"    } 
+    ]
   },
   "current-schema-id" : 0,
   "schemas" : [Schema-List],
-  "partition-spec" : [ {
-    "name" : "dt",
-    "transform" : "identity",
-    "source-id" : 3,
-    "field-id" : 1000
-  }, {
-    "name" : "hh",
-    "transform" : "identity",
-    "source-id" : 4,
-    "field-id" : 1001
-  } ],
+  "partition-spec" : [ 
+      {    "name" : "dt",    "transform" : "identity",    "source-id" : 3,    "field-id" : 1000  }, 
+      {    "name" : "hh",    "transform" : "identity",    "source-id" : 4,    "field-id" : 1001  } 
+  ],
   "default-spec-id" : 0,
   "partition-specs" : [],
   "last-partition-id" : 1001,
   "default-sort-order-id" : 0,
-  "sort-orders" : [ {
-    "order-id" : 0,
-    "fields" : [ ]
-  } ],
-  "properties" : {
-    "owner" : "hadoop"
-  },
+  "sort-orders" : [ {    "order-id" : 0,    "fields" : [ ]  } ],
+  "properties" : {    "owner" : "hadoop"  },
   "current-snapshot-id" : 8794944773092184238,
-  "snapshots" : [ {}, {}, {}, {}, {}, {
-    "snapshot-id" : 8794944773092184238,
-    "parent-snapshot-id" : 125553185071750515,
-    "timestamp-ms" : 1638192725276,
-    "summary" : {
-      "operation" : "overwrite",
-      "spark.app.id" : "application_1638186442430_0007",
-      "deleted-data-files" : "1",
-      "deleted-records" : "1",
-      "removed-files-size" : "1147",
-      "changed-partition-count" : "1",
-      "total-records" : "2",
-      "total-files-size" : "2483",
-      "total-data-files" : "2",
-      "total-delete-files" : "0",
-      "total-position-deletes" : "0",
-      "total-equality-deletes" : "0"
-    },
-    "manifest-list" : "s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/metadata/snap-8794944773092184238-1-2aab4ad2-246a-4f3b-9901-263a6bda5cde.avro",
-    "schema-id" : 0
-  } ],
-  "snapshot-log" : [ {}, {}, {}, {}, {}, {
-    "timestamp-ms" : 1638192725276,
-    "snapshot-id" : 8794944773092184238
-  } ],
-  "metadata-log" : [ {}, {}, {}, {}, {}, {
-    "timestamp-ms" : 1638192660870,
-    "metadata-file" : "s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/metadata/00005-659fb633-ed76-44c8-85b4-407fd1a01a89.metadata.json"
+  "snapshots" : [ {}, {}, {}, {}, {}, 
+          {
+            "snapshot-id" : 8794944773092184238,
+            "parent-snapshot-id" : 125553185071750515,
+            "timestamp-ms" : 1638192725276,
+            "summary" : {
+              "operation" : "overwrite",
+              "spark.app.id" : "application_1638186442430_0007",
+              "deleted-data-files" : "1",
+              "deleted-records" : "1",
+              "removed-files-size" : "1147",
+              "changed-partition-count" : "1",
+              "total-records" : "2",
+              "total-files-size" : "2483",
+              "total-data-files" : "2",
+              "total-delete-files" : "0",
+              "total-position-deletes" : "0",
+              "total-equality-deletes" : "0"
+            },
+            "manifest-list" : "s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/metadata/snap-8794944773092184238-1-2aab4ad2-246a-4f3b-9901-263a6bda5cde.avro",
+            "schema-id" : 0
+          } 
+  ],
+  "snapshot-log" : [ {}, {}, {}, {}, {}, {    "timestamp-ms" : 1638192725276,    "snapshot-id" : 8794944773092184238  } ],
+  "metadata-log" : [ {}, {}, {}, {}, {}, {    "timestamp-ms" : 1638192660870,    "metadata-file" : "s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/metadata/00005-659fb633-ed76-44c8-85b4-407fd1a01a89.metadata.json"
   } ]
 }
 
@@ -155,11 +128,7 @@ partitioned by (dt, hh);
    {
       "file_path": "s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/data/dt=2021-11-28/hh=12/00000-2028-a2ddddda-6d06-4edb-b6f0-11d4ee2ebe8a-00001.parquet",
       "file_format": "PARQUET",
-      "partition": 
-      {
-         "dt": "2021-11-28",
-         "hh": "12"
-      },
+      "partition":       {         "dt": "2021-11-28",         "hh": "12"      },
       "record_count": 1,
       "file_size_in_bytes": 1147,
       "block_size_in_bytes": 67108864,
@@ -167,30 +136,30 @@ partitioned by (dt, hh);
                            {  "key": 2,  "value": 49 }, 
                            {  "key": 3,  "value": 61 },
                            {  "key": 4,  "value": 53 }
-      ],
+                        ],
       "value_counts": [
                         {   "key": 1,   "value": 1     }, 
                         {   "key": 2,   "value": 1     }, 
                         {   "key": 3,   "value": 1     }, 
                         {   "key": 4,   "value": 1     }
-      ],
+                       ],
       "null_value_counts": [
                         {    "key": 1,     "value": 0     }, 
                         {    "key": 2,     "value": 1     }, 
                         {    "key": 3,     "value": 0     }, 
                         {    "key": 4,     "value": 0     }
-      ],
+                    ],
       "nan_value_counts": [
       ],
       "lower_bounds": [
-                        {   "key": 1,  "value": "AQAAAAAAAAA="  }, 
-                        {   "key": 3,  "value": "MjAyMS0xMS0yOA=="  }, 
-                        {   "key": 4,  "value": "MTI="   }
+                        {   "key": 1,  "value": "AQAAAAAAAAA="     }, 
+                        {   "key": 3,  "value": "MjAyMS0xMS0yOA==" }, 
+                        {   "key": 4,  "value": "MTI="             }
       ],
       "upper_bounds": [
                         {    "key": 1,  "value": "AQAAAAAAAAA="       }, 
                         {   "key": 3,  "value": "MjAyMS0xMS0yOA=="    }, 
-                        {  "key": 4,  "value": "MTI="                  }
+                        {  "key": 4,  "value": "MTI="                 }
       ],
       "key_metadata": null,
       "split_offsets": [
@@ -200,11 +169,8 @@ partitioned by (dt, hh);
    }
 }
 
-
-
-
 ```
-![Folder Structure](./images/iceberg-folders.png)
+
 
 
 

@@ -30,9 +30,10 @@ partitioned by (dt, hh);
 ![Folder Structure](./images/iceberg-folders.png)
 
 ### Metadata  File 
+s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/metadata/00000-2c217da2-d0a1-40cc-b8be-b48579939d9c.metadata.json
 
 ```json
--- Metadata Content of s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/metadata/00000-2c217da2-d0a1-40cc-b8be-b48579939d9c.metadata.json
+
 {
   "format-version" : 1,
   "table-uuid" : "61baf2f9-7add-4be0-8929-b345c82e5aee",
@@ -91,8 +92,9 @@ partitioned by (dt, hh);
 }
 ```
 ### Menifest  List File 
-```
---- Content of s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/metadata/snap-8794944773092184238-1-2aab4ad2-246a-4f3b-9901-263a6bda5cde.avro
+s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/metadata/snap-8794944773092184238-1-2aab4ad2-246a-4f3b-9901-263a6bda5cde.avro
+```json
+
 {
    "manifest_path": "s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/metadata/2aab4ad2-246a-4f3b-9901-263a6bda5cde-m0.avro",
    "manifest_length": 6338,
@@ -125,8 +127,8 @@ partitioned by (dt, hh);
 }
 ```
 ### Menifest  File 
-```
---- Content of s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/metadata/2aab4ad2-246a-4f3b-9901-263a6bda5cde-m0.avro
+s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/metadata/2aab4ad2-246a-4f3b-9901-263a6bda5cde-m0.avro
+```json
 
 {
    "status": 2,

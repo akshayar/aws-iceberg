@@ -58,15 +58,17 @@ timestamp has epoch value in seconds.
 SSH to master node and then run the spark submit command.
 
 ```
-spark-submit \ 
+spark-submit \
 --conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
 --conf spark.sql.catalog.my_catalog=org.apache.iceberg.spark.SparkCatalog    \
---conf spark.sql.catalog.my_catalog.warehouse=s3://<bucket-name>/<path> \
+--conf spark.sql.catalog.my_catalog.warehouse=s3://akshaya-firehose-test/iceberg \
 --conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
 --conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
 --conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
 --conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
---packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0 \
+--packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
 --class kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
 <bucket-name> <kinesis-stream-name> <kineis-region> <table-name>
 
@@ -82,7 +84,9 @@ spark-submit \
 --conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
 --conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
 --conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
---packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
+--packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
 --class kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
 akshaya-firehose-test data-stream-ingest ap-south-1 my_catalog.iceberg.iceberg_trade_info_simulated
 	
@@ -92,15 +96,17 @@ akshaya-firehose-test data-stream-ingest ap-south-1 my_catalog.iceberg.iceberg_t
 Run the shell with command below and copy paste code from   [kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor](src/main/scala/kinesis/hudi/iceberg/SparkKinesisConsumerIcebergProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
 
 ```
+spark-shell
 --conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
---conf spark.sql.catalog.spark_catalog=org.apache.iceberg.spark.SparkSessionCatalog    \
---conf spark.sql.catalog.spark_catalog.type=hive    \
---conf spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog   \
---conf spark.sql.catalog.local.type=hadoop   \
---conf spark.sql.catalog.local.warehouse=s3://<bucket-name>/<base-path> \
---conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
---conf spark.sql.hive.convertMetastoreParquet=false \
---packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0 
+--conf spark.sql.catalog.my_catalog=org.apache.iceberg.spark.SparkCatalog    \
+--conf spark.sql.catalog.my_catalog.warehouse=s3://akshaya-firehose-test/iceberg \
+--conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
+--conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
+--conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
+--conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
+--packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 
 
 ```
 
@@ -134,32 +140,62 @@ DMS publishes the changes to Kineiss
 } 
 ```
 ## Spark Scala Code
-[kinesis.hudi.SparkKinesisConsumerHudiProcessor](src/main/scala/kinesis/hudi/SparkKinesisConsumerHudiProcessor.scala)
+[kinesis.iceberg.SparkKinesisConsumerIcebergProcessor](src/main/scala/kinesis/iceberg/SparkKinesisConsumerIcebergProcessor.scala)
 
 ## Spark Submit 
 
 SSH to master node and then run the spark submit command.
-```
-spark-submit \
---conf "spark.serializer=org.apache.spark.serializer.KryoSerializer" \
---conf "spark.sql.hive.convertMetastoreParquet=false" \
---conf "spk.dynamicAllocation.maxExecutors=10" \
---jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
---packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 \
---class kinesis.hudi.SparkKinesisConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar \
-<bucket-name>  <stream-name> <region> <COW/MOR> <table_name>
-	
 
 ```
+spark-submit \
+--conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
+--conf spark.sql.catalog.my_catalog=org.apache.iceberg.spark.SparkCatalog    \
+--conf spark.sql.catalog.my_catalog.warehouse=s3://akshaya-firehose-test/iceberg \
+--conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
+--conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
+--conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
+--conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
+--packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
+--class kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
+<bucket-name> <kinesis-stream-name> <kineis-region> <table-name>
+
+
+```
+Example
+```
+spark-submit \
+--conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
+--conf spark.sql.catalog.my_catalog=org.apache.iceberg.spark.SparkCatalog    \
+--conf spark.sql.catalog.my_catalog.warehouse=s3://akshaya-firehose-test/iceberg \
+--conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
+--conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
+--conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
+--conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
+--packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
+--class kinesis.iceberg.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
+akshaya-firehose-test data-stream-ingest ap-south-1 my_catalog.iceberg.iceberg_customer_order_details
+	
+```
+
+
 ## Spark Shell
 Run the shell with command below and copy paste code from   [kinesis.hudi.SparkKinesisConsumerHudiProcessor](src/main/scala/kinesis/hudi/SparkKinesisConsumerHudiProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
 
 ```
-spark-shell \
---conf 'spark.serializer=org.apache.spark.serializer.KryoSerializer' \
---conf 'spark.sql.hive.convertMetastoreParquet=false' \
---jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
---packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4
+spark-shell
+--conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
+--conf spark.sql.catalog.my_catalog=org.apache.iceberg.spark.SparkCatalog    \
+--conf spark.sql.catalog.my_catalog.warehouse=s3://akshaya-firehose-test/iceberg \
+--conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
+--conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
+--conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
+--conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
+--packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 
 
 ```
 
@@ -173,22 +209,44 @@ The filePath here is the path to the file which got added to S3 by DMS. An S3 ev
 }
 ```
 ## Spark Scala Code
-[kinesis.hudi.SparkKinesisFilePathConsumerHudiProcessor](src/main/scala/kinesis/hudi/SparkKinesisFilePathConsumerHudiProcessor.scala)
+[kinesis.hudi.SparkKinesisFilePathConsumerIcebergProcessor](src/main/scala/kinesis/hudi/SparkKinesisFilePathConsumerIcebergProcessor.scala)
 
 ## Spark Submit 
     
     
 ```
 spark-submit \
---conf "spark.serializer=org.apache.spark.serializer.KryoSerializer" \
---conf "spark.sql.hive.convertMetastoreParquet=false" \
---conf "spk.dynamicAllocation.maxExecutors=10" \
---jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
---packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 \
---class kinesis.hudi.SparkKinesisFilePathConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar \
-<bucket-name>  <stream-name> <region> <COW/MOR> <table_name>
-	
+--conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
+--conf spark.sql.catalog.my_catalog=org.apache.iceberg.spark.SparkCatalog    \
+--conf spark.sql.catalog.my_catalog.warehouse=s3://akshaya-firehose-test/iceberg \
+--conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
+--conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
+--conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
+--conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
+--packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
+--class kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
+<bucket-name> <kinesis-stream-name> <kineis-region> <table-name>
 
+
+```
+Example
+```
+spark-submit \
+--conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
+--conf spark.sql.catalog.my_catalog=org.apache.iceberg.spark.SparkCatalog    \
+--conf spark.sql.catalog.my_catalog.warehouse=s3://akshaya-firehose-test/iceberg \
+--conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
+--conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
+--conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
+--conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
+--packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 \
+--class kinesis.iceberg.SparkKinesisFilePathConsumerIcebergProcessor spark-structured-streaming-kinesis-iceberg_2.12-1.0.jar \
+akshaya-firehose-test data-stream-ingest ap-south-1 my_catalog.iceberg.iceberg_customer_order_details
+	
 ```
 
 ## Spark Shell
@@ -196,13 +254,18 @@ spark-submit \
 Run the shell with command below and copy paste code from   [kinesis.hudi.SparkKinesisFilePathConsumerHudiProcessor](src/main/scala/kinesis/hudi/SparkKinesisFilePathConsumerHudiProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
 
 ```
-
-spark-shell \
---conf 'spark.serializer=org.apache.spark.serializer.KryoSerializer' \
---conf 'spark.sql.hive.convertMetastoreParquet=false' \
---jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
---packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4
+spark-shell
+--conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
+--conf spark.sql.catalog.my_catalog=org.apache.iceberg.spark.SparkCatalog    \
+--conf spark.sql.catalog.my_catalog.warehouse=s3://akshaya-firehose-test/iceberg \
+--conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
+--conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
+--conf spark.sql.catalog.my_catalog.lock-impl=org.apache.iceberg.aws.glue.DynamoLockManager \
+--conf spark.sql.catalog.my_catalog.lock.table=myGlueLockTable \
+--packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,\
+org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,\
+software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40 
 ```
 # Possible Issues 
-1.  Could not open client transport with JDBC Uri: jdbc:hive2://localhost:10000: java.net.ConnectException: Connection refused (Connection refused) --- The error message could be distracting. Since Glue Catelog integration is enabled , the job should not connect to Hive. In my case the error only happened in Mumbai region while it worked in Virginia ang Oregon. I had "Lake Formation" enabled in which case a role reading/writing to Glue table should have permission granted on Lake Formation. I granted EMR_EC2_DefaultRole role permission to create table, read and write on "default" database in Lake Formation. default database since without explicitely specifying the table with HIVE_DATABASE_OPT_KEY , HUDI writes to default database. 
+
 2. 

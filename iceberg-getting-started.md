@@ -31,7 +31,7 @@ partitioned by (dt, hh);
 
 ### Metadata  File 
 
-```
+```json
 -- Metadata Content of s3://akshaya-firehose-test/lake/compare/iceberg/iceberg.db/iceberg_sample_table/metadata/00000-2c217da2-d0a1-40cc-b8be-b48579939d9c.metadata.json
 {
   "format-version" : 1,

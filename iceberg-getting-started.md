@@ -204,7 +204,8 @@ partitioned by (dt, hh);
 
 
 ```
-![Folder Structure](imges/iceberg-folders.png)
+![Folder Structure](./images/iceberg-folders.png)
+
 
 
 ## Insert Data

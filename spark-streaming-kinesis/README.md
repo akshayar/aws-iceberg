@@ -93,7 +93,8 @@ akshaya-firehose-test data-stream-ingest ap-south-1 my_catalog.iceberg.iceberg_t
 ```
 
 ## Spark Shell
-Run the shell with command below and copy paste code from   [kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor](src/main/scala/kinesis/iceberg/iceberg/SparkKinesisConsumerIcebergProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
+Run the shell with command below and copy paste code from   [kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor](src/main/scala/kinesis/iceberg/latefile/SparkKinesisConsumerIcebergProcessor.scala)
+. The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
 
 ```
 spark-shell
@@ -182,7 +183,7 @@ akshaya-firehose-test data-stream-ingest ap-south-1 my_catalog.iceberg.iceberg_c
 
 
 ## Spark Shell
-Run the shell with command below and copy paste code from   [kinesis.iceberg.SparkKinesisConsumerIcebergProcessor](src/main/scala/kinesis/iceberg/SparkKinesisConsumerHudiProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
+Run the shell with command below and copy paste code from   [kinesis.iceberg.SparkKinesisConsumerIcebergProcessor](src/main/scala/kinesis/iceberg/SparkKinesisConsumerIcebergProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
 
 ```
 spark-shell
@@ -251,7 +252,7 @@ akshaya-firehose-test data-stream-ingest ap-south-1 my_catalog.iceberg.iceberg_c
 
 ## Spark Shell
 
-Run the shell with command below and copy paste code from   [kinesis.iceberg.SparkKinesisFilePathConsumerIcebergProcessor](src/main/scala/kinesis/iceberg/SparkKinesisFilePathConsumerHudiProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
+Run the shell with command below and copy paste code from   [kinesis.iceberg.SparkKinesisFilePathConsumerIcebergProcessor](src/main/scala/kinesis/iceberg/SparkKinesisFilePathConsumerIcebergProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
 
 ```
 spark-shell

@@ -52,7 +52,7 @@ timestamp has epoch value in seconds.
 
 ```
 ## Spark Scala Code
-[kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor](src/main/scala/kinesis/hudi/latefile/SparkKinesisConsumerHudiProcessor.scala)
+[kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor](src/main/scala/kinesis/iceberg/latefile/SparkKinesisConsumerIcebergProcessor.scala)
 
 ## Spark Submit 
 SSH to master node and then run the spark submit command.
@@ -93,7 +93,7 @@ akshaya-firehose-test data-stream-ingest ap-south-1 my_catalog.iceberg.iceberg_t
 ```
 
 ## Spark Shell
-Run the shell with command below and copy paste code from   [kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor](src/main/scala/kinesis/hudi/iceberg/SparkKinesisConsumerIcebergProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
+Run the shell with command below and copy paste code from   [kinesis.iceberg.latefile.SparkKinesisConsumerIcebergProcessor](src/main/scala/kinesis/iceberg/iceberg/SparkKinesisConsumerIcebergProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
 
 ```
 spark-shell
@@ -182,7 +182,7 @@ akshaya-firehose-test data-stream-ingest ap-south-1 my_catalog.iceberg.iceberg_c
 
 
 ## Spark Shell
-Run the shell with command below and copy paste code from   [kinesis.hudi.SparkKinesisConsumerHudiProcessor](src/main/scala/kinesis/hudi/SparkKinesisConsumerHudiProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
+Run the shell with command below and copy paste code from   [kinesis.iceberg.SparkKinesisConsumerIcebergProcessor](src/main/scala/kinesis/iceberg/SparkKinesisConsumerHudiProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
 
 ```
 spark-shell
@@ -209,7 +209,7 @@ The filePath here is the path to the file which got added to S3 by DMS. An S3 ev
 }
 ```
 ## Spark Scala Code
-[kinesis.hudi.SparkKinesisFilePathConsumerIcebergProcessor](src/main/scala/kinesis/hudi/SparkKinesisFilePathConsumerIcebergProcessor.scala)
+[kinesis.iceberg.SparkKinesisFilePathConsumerIcebergProcessor](src/main/scala/kinesis/iceberg/SparkKinesisFilePathConsumerIcebergProcessor.scala)
 
 ## Spark Submit 
     
@@ -251,7 +251,7 @@ akshaya-firehose-test data-stream-ingest ap-south-1 my_catalog.iceberg.iceberg_c
 
 ## Spark Shell
 
-Run the shell with command below and copy paste code from   [kinesis.hudi.SparkKinesisFilePathConsumerHudiProcessor](src/main/scala/kinesis/hudi/SparkKinesisFilePathConsumerHudiProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
+Run the shell with command below and copy paste code from   [kinesis.iceberg.SparkKinesisFilePathConsumerIcebergProcessor](src/main/scala/kinesis/iceberg/SparkKinesisFilePathConsumerHudiProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
 
 ```
 spark-shell

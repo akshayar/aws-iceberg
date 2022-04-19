@@ -336,7 +336,7 @@ spark-sql \
     --conf spark.sql.catalog.my_catalog.warehouse=s3://athena-workshop-18042022/athena/iceberg \
     --conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
     --conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
-    --packages org.apache.iceberg:iceberg-spark3-runtime:0.12.1,org.apache.iceberg:iceberg-spark3-extensions:0.12.1,org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40
+    --packages org.apache.iceberg:iceberg-spark3-runtime:0.13.1,org.apache.iceberg:iceberg-spark3-extensions:0.13.1,org.apache.spark:spark-streaming-kinesis-asl_2.12:3.1.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40
 
 ```
 ```roomsql
@@ -395,7 +395,76 @@ INSERT into my_catalog.iceberg.created_from_spark values ( 1, 'First Rec From Sp
 
 INSERT into my_catalog.iceberg.created_from_spark2 values ( 1, 'First Rec From Spark' , '19-Apr-2022','09')
 
--- For this insert from Athen did not work
+-- For this insert from Athen did not work for EMR 6.3.0
 
 ```
 
+## Create another EMR Cluster with version 6.5.0
+`EMR Version:6.5.0`
+```shell
+aws emr create-cluster --termination-protected \
+--applications Name=Hadoop Name=Hive Name=Pig Name=Spark Name=Livy \
+--ec2-attributes '{"KeyName":"aksh-useast","InstanceProfile":"EMR_EC2_DefaultRole","SubnetId":"subnet-008996dc434a75398","EmrManagedSlaveSecurityGroup":"sg-0293acdd6212519b7","EmrManagedMasterSecurityGroup":"sg-09713a8bf849b4b3e"}' \
+--release-label emr-6.5.0 \
+--log-uri 's3n://aws-logs-799223504601-us-east-1/elasticmapreduce/' \
+--instance-groups '[{"InstanceCount":1,"EbsConfiguration":{"EbsBlockDeviceConfigs":[{"VolumeSpecification":{"SizeInGB":64,"VolumeType":"gp2"},"VolumesPerInstance":4}]},"InstanceGroupType":"MASTER","InstanceType":"m5.4xlarge","Name":"Master - 1"}]' \
+--configurations '[{"Classification":"hive-site","Properties":{"hive.metastore.client.factory.class":"com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"}},{"Classification":"spark-hive-site","Properties":{"hive.metastore.client.factory.class":"com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"}}]' \
+--auto-scaling-role EMR_AutoScaling_DefaultRole \
+--ebs-root-volume-size 100 \
+--service-role EMR_DefaultRole \
+--enable-debugging --name 'iceberg' \
+--scale-down-behavior TERMINATE_AT_TASK_COMPLETION \
+--region us-east-1
+```
+## Spark SQL Insert and Query Data
+```shell
+
+spark-sql \
+>     --conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions    \
+>     --conf spark.sql.catalog.my_catalog=org.apache.iceberg.spark.SparkCatalog    \
+>     --conf spark.sql.catalog.my_catalog.warehouse=s3://athena-workshop-18042022/athena/iceberg \
+>     --conf spark.sql.catalog.my_catalog.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog \
+>     --conf spark.sql.catalog.my_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO \
+>     --packages org.apache.iceberg:iceberg-spark3-runtime:0.13.1,org.apache.iceberg:iceberg-spark3-extensions:0.13.1,com.qubole.spark:spark-sql-kinesis_2.12:1.2.0_spark-3.0,software.amazon.awssdk:bundle:2.15.40,software.amazon.awssdk:url-connection-client:2.15.40
+```
+
+```roomsql
+ CREATE TABLE my_catalog.iceberg.created_from_spark4 (
+                      id int,
+                      name string,
+                      dt string, 
+                     hh string )
+           USING iceberg
+ ;
+ 
+ INSERT into my_catalog.iceberg.created_from_spark4 values ( 1, 'First Rec From Spark' , '19-Apr-2022','09')
+ 
+ select * from my_catalog.iceberg.created_from_spark4 ;
+ 
+ CREATE TABLE my_catalog.iceberg.created_from_spark5 (
+            id int,
+            name string,
+            dt string, 
+            hh string )
+ USING iceberg
+ PARTITIONED BY (dt,hh)
+ ;
+
+INSERT into my_catalog.iceberg.created_from_spark5 values ( 1, 'First Rec From Spark' , '19-Apr-2022','09')
+
+```
+
+## From Athena SQL Insert and Query Data
+```roomsql
+SELECT * FROM iceberg.created_from_spark4 limit 10;
+
+INSERT into iceberg.created_from_spark4 values ( 3, 'Third Rec From Athena' , '19-Apr-2022','09')
+
+SELECT * FROM iceberg.created_from_spark5 limit 10;
+
+INSERT into iceberg.created_from_spark5 values ( 2, 'Second Rec From Athena' , '19-Apr-2022','11')
+
+```
+
+### Folder Structure For Table created from Spark
+![Folder Structure](./images/created_from_spark-0.png)

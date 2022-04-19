@@ -317,7 +317,7 @@ aws emr create-cluster --termination-protected \
 --applications Name=Hadoop Name=Hive Name=Pig Name=Spark Name=Livy \
 --ec2-attributes '{"KeyName":"aksh-useast","InstanceProfile":"EMR_EC2_DefaultRole","SubnetId":"subnet-008996dc434a75398","EmrManagedSlaveSecurityGroup":"sg-0293acdd6212519b7","EmrManagedMasterSecurityGroup":"sg-09713a8bf849b4b3e"}' \
 --release-label emr-6.3.0 \
---log-uri 's3n://aws-logs-799223504601-us-east-1/elasticmapreduce/' \
+--log-uri 's3n://aws-logs-us-east-1/elasticmapreduce/' \
 --instance-groups '[{"InstanceCount":1,"EbsConfiguration":{"EbsBlockDeviceConfigs":[{"VolumeSpecification":{"SizeInGB":64,"VolumeType":"gp2"},"VolumesPerInstance":4}]},"InstanceGroupType":"MASTER","InstanceType":"m5.4xlarge","Name":"Master - 1"}]' \
 --configurations '[{"Classification":"hive-site","Properties":{"hive.metastore.client.factory.class":"com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"}},{"Classification":"spark-hive-site","Properties":{"hive.metastore.client.factory.class":"com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"}}]' \
 --auto-scaling-role EMR_AutoScaling_DefaultRole \

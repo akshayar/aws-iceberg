@@ -1,4 +1,4 @@
-name := "spark-structured-streaming-kinesis-iceberg"
+name := "spark-structured-streaming-kafka-iceberg"
 
 version := "1.0"
 
@@ -12,8 +12,8 @@ libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion
 libraryDependencies += "org.apache.spark" %% "spark-sql" % sparkVersion
 
 
-libraryDependencies += "org.apache.spark" % "spark-streaming-kinesis-asl_2.12" % sparkVersion
-libraryDependencies += "com.qubole.spark" % "spark-sql-kinesis_2.12" % "1.2.1_spark-3.0-SNAPSHOT"
+libraryDependencies += "org.apache.spark" % "spark-sql-kafka-0-10_2.12" % sparkVersion
+libraryDependencies += "org.apache.spark" % "spark-streaming-kafka-0-10_2.12" % sparkVersion
 libraryDependencies += "org.apache.iceberg" % "iceberg-spark3-runtime" % "0.12.1"
 libraryDependencies += "org.apache.iceberg" % "iceberg-spark3-extensions" % "0.12.1"
 

@@ -1,4 +1,4 @@
-package kinesis.iceberg.latefile
+package kafka.iceberg.latefile
 
 // Spark Shell ---start
 
@@ -10,9 +10,6 @@ import org.apache.spark.sql.types.{LongType, StringType, StructField, StructType
 import org.apache.spark.sql.SparkSession
 import org.apache.log4j.Logger
 import org.apache.spark.storage.StorageLevel
-import org.apache.spark.streaming.kinesis.KinesisInputDStream
-import org.apache.spark.streaming.{Seconds, StreamingContext}
-import org.apache.spark.streaming.kinesis.KinesisInitialPositions
 import java.util.Date
 import java.text.SimpleDateFormat
 import org.apache.spark.sql.streaming._
@@ -39,7 +36,7 @@ import java.util.concurrent.TimeUnit
  * tableNamePrefix Ex. <hudi_trade_info>
  *
  */
-object SparkKinesisConsumerIcebergProcessor {
+object SparkKakfaConsumerIcebergProcessor {
 
   def main(args: Array[String]): Unit = {
 
@@ -59,32 +56,30 @@ object SparkKinesisConsumerIcebergProcessor {
     spark.conf.set("spark.sql.streaming.metricsEnabled", "true")
     // Spark Shell -- hardcode these parameters
     var s3_bucket = "akshaya-firehose-test"
-    var streamName = "hudi-stream-ingest"
-    var region = "ap-south-1"
-    var tableName = "my_catalog.default.iceberg_trade_info_simulated"
-    var iteratorPosition = "LATEST"
+    var kafkaBootstrap="ip-10-192-11-254.ap-south-1.compute.internal:9092"
+    var topic = "data-stream-ingest-json"
+    var tableName = "my_catalog.default.iceberg_sales_order_detail"
+    var startingPosition = "LATEST"
+
     // Spark Shell ---end 
     if (!Option(args).isEmpty) {
       s3_bucket = args(0)
-      streamName = args(1)
-      region = args(2)
+      kafkaBootstrap = args(1)
+      topic = args(2)
       tableName = args(3)
-      iteratorPosition = args(4)
+      startingPosition = args(4)
     }
 
-    // Spark Shell ---start 
-    val endpointUrl = s"https://kinesis.$region.amazonaws.com"
-    val checkpoint_path = s"s3://$s3_bucket/kinesis-stream-data-checkpoint/iceberg/$tableName/"
+    // Spark Shell ---start
+    val checkpoint_path = s"s3://$s3_bucket/kafka-stream-data-checkpoint/iceberg/$tableName/"
     val recordKey = "record_key"
 
     println("s3_bucket:" + s3_bucket)
-    println("streamName:" + streamName)
-    println("region:" + region)
+    println("kafkaBootstrap:" + kafkaBootstrap)
+    println("topic:" + topic)
     println("tableName:" + tableName)
     println("recordKey:" + recordKey)
     println("checkpoint_path:" + checkpoint_path)
-    println("endpointUrl:" + endpointUrl)
-    println("iteratorPosition:" + iteratorPosition)
 
     val creatTableString =
       s"""CREATE TABLE IF NOT EXISTS $tableName
@@ -108,12 +103,10 @@ object SparkKinesisConsumerIcebergProcessor {
     table.printSchema()
 
     val streamingInputDF = (spark
-      .readStream.format("kinesis")
-      .option("streamName", streamName)
-      .option("startingposition", iteratorPosition)
-      .option("endpointUrl", endpointUrl)
-      .option("awsuseinstanceprofile", "false")
-      .load())
+      .readStream.format("kafka")
+      .option("kafka.bootstrap.servers", kafkaBootstrap)
+      .option("subscribe", topic)
+      .option("startingOffsets", startingPosition).load())
 
     val decimalType = DataTypes.createDecimalType(38, 10)
     val dataSchema = StructType(Array(
@@ -126,13 +119,13 @@ object SparkKinesisConsumerIcebergProcessor {
       StructField("traderName", StringType, true),
       StructField("traderFirm", StringType, true)
     ))
-    var jsonDF = (streamingInputDF.selectExpr("CAST(data AS STRING)").as[(String)]
-      .withColumn("jsonData", from_json(col("data"), dataSchema))
+
+    var jsonDF=(streamingInputDF
+      .selectExpr("CAST(value AS STRING)").as[(String)]
+      .withColumn("jsonData",from_json(col("value"),dataSchema))
       .select(col("jsonData.*")))
 
-
     jsonDF.printSchema()
-
 
     jsonDF = jsonDF.select(jsonDF.columns.map(x => col(x).as(x.toLowerCase)): _*)
     jsonDF = jsonDF.filter(jsonDF.col("tradeid").isNotNull)
